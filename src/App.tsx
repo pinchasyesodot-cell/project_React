@@ -1,116 +1,46 @@
-import { useState } from 'react'
-import './App.css'
+import React, { useState } from "react";
+import type { FilterStatus, Task } from "./types";
+import TaskInput from "./components/TaskInput";
+import TaskList from "./components/TaskList";
+import { TaskFilter } from "./components/TasksFilter";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
+  const [tasks, setTasks] = React.useState<Task[]>([]);
+  const handleAddTask = (title: string, description: string) => {
+    const newTask: Task = {
+      id: crypto.randomUUID(),
+      title,
+      description,
+      completed: false,
+    };
+    setTasks([...tasks, newTask]);
+  };
+  const [filter, setFilter] = useState<FilterStatus>("all");
+  const filterTasks = tasks.filter((task) => {
+    if (filter === "completed") return task.completed;
+    if (filter === "incomplete") return !task.completed;
+    return true
+  });
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo"  alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
+    <div className="app">
+      <h1>Task Manager</h1>
+      <TaskInput onAddTask={handleAddTask} />
+      <TaskList
+        tasks={filterTasks}
+        onToggleTask={(id) =>
+          setTasks(
+            filterTasks.map((task) =>
+              task.id === id ? { ...task, completed: !task.completed } : task,
+            ),
+          )
+        }
+        onDeleteTask={(id) => setTasks(filterTasks.filter((task) => task.id !== id))}
+      />
+      <TaskFilter
+        currentFilter={filter}
+        onFilterChange={setFilter}
+      ></TaskFilter>
+    </div>
+  );
+};
+export default App;
