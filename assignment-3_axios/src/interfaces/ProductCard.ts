@@ -5,6 +5,7 @@ export interface ProductCardProps {
   images: string[];
   rating: number;
   description: string;
+  total: number;
 }
 
 export interface ProductsApiResponse {

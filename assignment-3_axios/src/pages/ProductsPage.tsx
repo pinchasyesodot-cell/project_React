@@ -48,6 +48,7 @@ export const ProductsPage = () => {
         {allProduct.map((product) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
             <ProductCard
+              total={product.total}
               id={product.id}
               description={product.description}
               images={product.images}
@@ -65,9 +66,12 @@ export const ProductsPage = () => {
             Loading more products...
           </>
         ) : (
-          <Button variant="contained" size="large" onClick={handleLoadMore}>
-            Load more products
-          </Button>
+          data &&
+          allProduct.length < data.total && (
+            <Button variant="contained" size="large" onClick={handleLoadMore}>
+              Load more products
+            </Button>
+          )
         )}
       </Box>
     </Box>
