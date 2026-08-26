@@ -6,10 +6,12 @@ import type {
   ProductCardProps,
 } from "../interfaces/ProductCard";
 import { useEffect, useState } from "react";
+import { SearchBar } from "../components/SearchBar";
 
 export const ProductsPage = () => {
   const [skip, setSkip] = useState(0);
   const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data, error, isLoading } = useFetch<ProductsApiResponse>(
     `/products?limit=20&skip=${skip}`,
@@ -40,12 +42,17 @@ export const ProductsPage = () => {
 
   if (error) return <Box>Error loading data: {error}</Box>;
 
+  const filteredProducts = allProduct.filter((product) =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <Box
       sx={{ padding: "30px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}
     >
+      <SearchBar onSearchChange={setSearchQuery}></SearchBar>
       <Grid container spacing={3}>
-        {allProduct.map((product) => (
+        {filteredProducts.map((product) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
             <ProductCard
               total={product.total}
