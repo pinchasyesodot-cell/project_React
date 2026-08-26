@@ -1,19 +1,23 @@
-import { Box, Button, CircularProgress, Grid } from "@mui/material";
+import { Alert, Box, Button, CircularProgress, Grid } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useFetch } from "../hooks/useFetch";
 import { ProductCard } from "../components/ProductCard";
 import type {
   ProductsApiResponse,
   ProductCardProps,
 } from "../interfaces/ProductCard";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SearchBar } from "../components/SearchBar";
+import { useNavigate } from "react-router";
 
-export const ProductsPage = () => {
+export const ProductsPage = (): React.JSX.Element => {
+  const navigate = useNavigate();
   const [skip, setSkip] = useState(0);
   const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data, error, isLoading } = useFetch<ProductsApiResponse>(
+  const { data, error, isLoading, refetch } = useFetch<ProductsApiResponse>(
     `/products?limit=20&skip=${skip}`,
   );
   useEffect(() => {
@@ -40,7 +44,24 @@ export const ProductsPage = () => {
     setSkip((prevSkip) => prevSkip + 20);
   };
 
-  if (error) return <Box>Error loading data: {error}</Box>;
+  if (error)
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          mt: 8,
+          gap: 2,
+        }}
+      >
+        <Alert color="error">Error loading data: {error}</Alert>
+        <Button variant="contained" onClick={refetch}>
+          Try reloading
+          <RefreshIcon />
+        </Button>
+      </Box>
+    );
 
   const filteredProducts = allProduct.filter((product) =>
     product.title.toLowerCase().includes(searchQuery.toLowerCase()),
@@ -50,19 +71,35 @@ export const ProductsPage = () => {
     <Box
       sx={{ padding: "30px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}
     >
-      <SearchBar onSearchChange={setSearchQuery}></SearchBar>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          backgroundColor: "#f5f5f5",
+          py: 2,
+          display: "flex",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          gap: 3,
+          mb: 3,
+        }}
+      >
+        <SearchBar onSearchChange={setSearchQuery} />
+        <Button
+          endIcon={<FavoriteIcon color="error" />}
+          variant="contained"
+          onClick={() => {
+            navigate("/favorites-product");
+          }}
+        >
+          Favorites
+        </Button>
+      </Box>
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
-            <ProductCard
-              total={product.total}
-              id={product.id}
-              description={product.description}
-              images={product.images}
-              price={product.price}
-              rating={product.rating}
-              title={product.title}
-            />
+            <ProductCard {...product} />
           </Grid>
         ))}
       </Grid>

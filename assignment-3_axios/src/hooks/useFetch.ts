@@ -7,10 +7,13 @@ export const useFetch = <T>(
   data: T | null;
   error: string | null;
   isLoading: boolean;
+  refetch: () => void;
 } => {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [trigger, setTrigger] = useState(0);
+  const refetch = () => setTrigger((prev) => prev + 1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +35,6 @@ export const useFetch = <T>(
       }
     };
     fetchData();
-  }, [url]);
-  return { data, error, isLoading };
+  }, [url, trigger]);
+  return { data, error, isLoading, refetch };
 };
