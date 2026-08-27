@@ -11,11 +11,12 @@ import {
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useFetch } from "../hooks/useFetch";
 import type { CategoriesProps, CategoryType } from "../interfaces/CategoryType";
+import type React from "react";
 
 export const FilterCategory = ({
   onSelectCategory,
   selectedCategory,
-}: CategoriesProps) => {
+}: CategoriesProps):React.JSX.Element => {
   const { data, error, isLoading, refetch } = useFetch<CategoryType[]>(
     "/products/categories",
   );

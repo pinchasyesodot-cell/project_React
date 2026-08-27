@@ -11,6 +11,8 @@ import React, { useEffect, useState } from "react";
 import { SearchBar } from "../components/SearchBar";
 import { useNavigate } from "react-router";
 import { FilterCategory } from "../components/FilterCategory";
+import { FilterPrice } from "../components/FilterPrice";
+import type { FilterPriceType } from "../interfaces/FilterPriceType";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -18,11 +20,15 @@ export const ProductsPage = (): React.JSX.Element => {
   const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectCategory, setSelectCategory] = useState("");
+  const [selectPrice, setSelectPrice] = useState<FilterPriceType>("");
+
   const endpoint = selectCategory
     ? `/products/category/${selectCategory}?limit=20&skip=${skip}`
     : `/products?limit=20&skip=${skip}`;
+
   const { data, error, isLoading, refetch } =
     useFetch<ProductsApiResponse>(endpoint);
+
   useEffect(() => {
     if (data && data.products) {
       setAllProduct((prevProducts) => {
@@ -34,6 +40,7 @@ export const ProductsPage = (): React.JSX.Element => {
       });
     }
   }, [data]);
+
   useEffect(() => {
     setAllProduct([]);
     setSkip(0);
@@ -70,10 +77,18 @@ export const ProductsPage = (): React.JSX.Element => {
       </Box>
     );
 
-  const filteredProducts = allProduct.filter((product) =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
+  const filteredProducts = allProduct
+    .filter((product) =>
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()),
+    )
+    .sort((a, b) => {
+      const priceA = a.price;
+      const priceB = b.price;
+      if (selectPrice === "From high to low") return priceB - priceA;
+      if (selectPrice === "From low to high") return priceA - priceB;
+      return 0;
+    });
+    
   return (
     <Box
       sx={{ padding: "30px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}
@@ -102,7 +117,14 @@ export const ProductsPage = (): React.JSX.Element => {
         >
           Favorites
         </Button>
-        <FilterCategory onSelectCategory={setSelectCategory} selectedCategory={selectCategory}></FilterCategory>
+        <FilterCategory
+          onSelectCategory={setSelectCategory}
+          selectedCategory={selectCategory}
+        ></FilterCategory>
+        <FilterPrice
+          filter={selectPrice}
+          onSelectPrice={setSelectPrice}
+        ></FilterPrice>
       </Box>
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
