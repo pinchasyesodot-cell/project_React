@@ -10,16 +10,19 @@ import type {
 import React, { useEffect, useState } from "react";
 import { SearchBar } from "../components/SearchBar";
 import { useNavigate } from "react-router";
+import { FilterCategory } from "../components/FilterCategory";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
   const [skip, setSkip] = useState(0);
   const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const { data, error, isLoading, refetch } = useFetch<ProductsApiResponse>(
-    `/products?limit=20&skip=${skip}`,
-  );
+  const [selectCategory, setSelectCategory] = useState("");
+  const endpoint = selectCategory
+    ? `/products/category/${selectCategory}?limit=20&skip=${skip}`
+    : `/products?limit=20&skip=${skip}`;
+  const { data, error, isLoading, refetch } =
+    useFetch<ProductsApiResponse>(endpoint);
   useEffect(() => {
     if (data && data.products) {
       setAllProduct((prevProducts) => {
@@ -31,6 +34,10 @@ export const ProductsPage = (): React.JSX.Element => {
       });
     }
   }, [data]);
+  useEffect(() => {
+    setAllProduct([]);
+    setSkip(0);
+  }, [selectCategory]);
 
   if (isLoading && allProduct.length === 0)
     return (
@@ -95,6 +102,7 @@ export const ProductsPage = (): React.JSX.Element => {
         >
           Favorites
         </Button>
+        <FilterCategory onSelectCategory={setSelectCategory} selectedCategory={selectCategory}></FilterCategory>
       </Box>
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (

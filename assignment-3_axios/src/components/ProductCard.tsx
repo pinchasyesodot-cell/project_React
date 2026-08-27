@@ -35,6 +35,7 @@ export const ProductCard = (
           {card.description}
         </Typography>
         <Typography variant="body2">Rating: {card.rating} ⭐</Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>category: {card.category}</Typography>
         <Typography variant="body1" sx={{ fontWeight: "bold", mt: 1 }}>
           ${card.price}
         </Typography>

@@ -6,6 +6,7 @@ export interface ProductCardProps {
   rating: number;
   description: string;
   total: number;
+  category: string;
 }
 
 export interface ProductsApiResponse {
