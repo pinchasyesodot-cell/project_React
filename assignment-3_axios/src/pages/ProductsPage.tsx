@@ -1,4 +1,11 @@
-import { Alert, Box, Button, CircularProgress, Grid } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Snackbar,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useFetch } from "../hooks/useFetch";
@@ -13,6 +20,7 @@ import { useNavigate } from "react-router";
 import { FilterCategory } from "../components/FilterCategory";
 import { FilterSort } from "../components/FilterSort";
 import type { FilterSortType } from "../interfaces/FilterPriceType";
+import { AddProductDialog } from "../components/AddProductDialog";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -21,6 +29,8 @@ export const ProductsPage = (): React.JSX.Element => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectCategory, setSelectCategory] = useState("");
   const [selectSort, setSelectSort] = useState<FilterSortType>("");
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const endpoint = selectCategory
     ? `/products/category/${selectCategory}?limit=20&skip=${skip}`
@@ -121,6 +131,15 @@ export const ProductsPage = (): React.JSX.Element => {
         >
           Favorites
         </Button>
+        <AddProductDialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onAdd={(newProduct) => {
+            setAllProduct((prevProducts) => [newProduct, ...prevProducts]);
+            setOpenDialog(false);
+            setOpenSnackbar(true);
+          }}
+        ></AddProductDialog>
         <FilterCategory
           onSelectCategory={setSelectCategory}
           selectedCategory={selectCategory}
@@ -129,6 +148,9 @@ export const ProductsPage = (): React.JSX.Element => {
           filter={selectSort}
           onSelectSort={setSelectSort}
         ></FilterSort>
+        <Button variant="contained" onClick={() => setOpenDialog(true)}>
+          Add Product
+        </Button>
       </Box>
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
@@ -152,6 +174,14 @@ export const ProductsPage = (): React.JSX.Element => {
           )
         )}
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert severity="success">המוצר נוסף בהצלחה! 🎉</Alert>
+      </Snackbar>
     </Box>
   );
 };
