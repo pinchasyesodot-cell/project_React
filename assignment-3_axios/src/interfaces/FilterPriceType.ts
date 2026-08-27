@@ -1,6 +1,11 @@
-export type FilterPriceType = "From high to low" | "From low to high" | "";
+export type FilterSortType =
+  | "From price high to low"
+  | "From price low to high"
+  | "From rating high to low"
+  | "From rating low to high"
+  | "";
 
-export interface PriceType {
-  filter: FilterPriceType;
-  onSelectPrice: (filter: FilterPriceType) => void;
+export interface SortType {
+  filter: FilterSortType;
+  onSelectSort: (filter: FilterSortType) => void;
 }

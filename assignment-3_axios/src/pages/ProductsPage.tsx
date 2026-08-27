@@ -11,8 +11,8 @@ import React, { useEffect, useState } from "react";
 import { SearchBar } from "../components/SearchBar";
 import { useNavigate } from "react-router";
 import { FilterCategory } from "../components/FilterCategory";
-import { FilterPrice } from "../components/FilterPrice";
-import type { FilterPriceType } from "../interfaces/FilterPriceType";
+import { FilterSort } from "../components/FilterSort";
+import type { FilterSortType } from "../interfaces/FilterPriceType";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export const ProductsPage = (): React.JSX.Element => {
   const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectCategory, setSelectCategory] = useState("");
-  const [selectPrice, setSelectPrice] = useState<FilterPriceType>("");
+  const [selectSort, setSelectSort] = useState<FilterSortType>("");
 
   const endpoint = selectCategory
     ? `/products/category/${selectCategory}?limit=20&skip=${skip}`
@@ -84,11 +84,15 @@ export const ProductsPage = (): React.JSX.Element => {
     .sort((a, b) => {
       const priceA = a.price;
       const priceB = b.price;
-      if (selectPrice === "From high to low") return priceB - priceA;
-      if (selectPrice === "From low to high") return priceA - priceB;
+      const ratingA = a.rating;
+      const ratingB = b.rating;
+      if (selectSort === "From price high to low") return priceB - priceA;
+      if (selectSort === "From price low to high") return priceA - priceB;
+      if (selectSort === "From rating high to low") return ratingB - ratingA;
+      if (selectSort === "From rating low to high") return ratingA - ratingB;
       return 0;
     });
-    
+
   return (
     <Box
       sx={{ padding: "30px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}
@@ -121,10 +125,10 @@ export const ProductsPage = (): React.JSX.Element => {
           onSelectCategory={setSelectCategory}
           selectedCategory={selectCategory}
         ></FilterCategory>
-        <FilterPrice
-          filter={selectPrice}
-          onSelectPrice={setSelectPrice}
-        ></FilterPrice>
+        <FilterSort
+          filter={selectSort}
+          onSelectSort={setSelectSort}
+        ></FilterSort>
       </Box>
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
