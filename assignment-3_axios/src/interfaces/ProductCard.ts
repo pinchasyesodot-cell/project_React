@@ -7,6 +7,7 @@ export interface ProductCardProps {
   description: string;
   total: number;
   category: string;
+  onEditClick?: () => void;
 }
 
 export interface ProductsApiResponse {

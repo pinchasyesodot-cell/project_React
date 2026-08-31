@@ -21,6 +21,7 @@ import { FilterCategory } from "../components/FilterCategory";
 import { FilterSort } from "../components/FilterSort";
 import type { FilterSortType } from "../interfaces/FilterPriceType";
 import { AddProductDialog } from "../components/AddProductDialog";
+import { EditProductDialog } from "../components/EditProductDialog";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ export const ProductsPage = (): React.JSX.Element => {
   const [selectSort, setSelectSort] = useState<FilterSortType>("");
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<ProductCardProps | null>(
+    null,
+  );
 
   const endpoint = selectCategory
     ? `/products/category/${selectCategory}?limit=20&skip=${skip}`
@@ -155,7 +159,10 @@ export const ProductsPage = (): React.JSX.Element => {
       <Grid container spacing={3}>
         {filteredProducts.map((product) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product.id}>
-            <ProductCard {...product} />
+            <ProductCard
+              {...product}
+              onEditClick={() => setEditingProduct(product)}
+            />
           </Grid>
         ))}
       </Grid>
@@ -182,6 +189,17 @@ export const ProductsPage = (): React.JSX.Element => {
       >
         <Alert severity="success">המוצר נוסף בהצלחה! 🎉</Alert>
       </Snackbar>
+      <EditProductDialog
+        product={editingProduct}
+        open={editingProduct !== null}
+        onClose={() => setEditingProduct(null)}
+        onEdit={(updateProduct) => {
+          setAllProduct((prev) =>
+            prev.map((p) => (p.id === updateProduct.id ? updateProduct : p)),
+          );
+          setEditingProduct(null);
+        }}
+      />
     </Box>
   );
 };
