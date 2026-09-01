@@ -22,11 +22,12 @@ import { FilterSort } from "../components/FilterSort";
 import type { FilterSortType } from "../interfaces/FilterPriceType";
 import { AddProductDialog } from "../components/AddProductDialog";
 import { EditProductDialog } from "../components/EditProductDialog";
+import { useLocalStorageProduct } from "../hooks/useLocalStorageProduct";
 
 export const ProductsPage = (): React.JSX.Element => {
   const navigate = useNavigate();
   const [skip, setSkip] = useState(0);
-  const [allProduct, setAllProduct] = useState<ProductCardProps[]>([]);
+  const { allProduct, setAllProduct } = useLocalStorageProduct([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectCategory, setSelectCategory] = useState("");
   const [selectSort, setSelectSort] = useState<FilterSortType>("");
@@ -56,7 +57,7 @@ export const ProductsPage = (): React.JSX.Element => {
   }, [data]);
 
   useEffect(() => {
-    setAllProduct([]);
+    setAllProduct((prevProduct) => prevProduct.filter((p) => p.isLocal));
     setSkip(0);
   }, [selectCategory]);
 
@@ -139,7 +140,8 @@ export const ProductsPage = (): React.JSX.Element => {
           open={openDialog}
           onClose={() => setOpenDialog(false)}
           onAdd={(newProduct) => {
-            setAllProduct((prevProducts) => [newProduct, ...prevProducts]);
+            const productWithFlag = { ...newProduct, isLocal: true };
+            setAllProduct((prevProducts) => [productWithFlag, ...prevProducts]);
             setOpenDialog(false);
             setOpenSnackbar(true);
           }}
@@ -194,8 +196,9 @@ export const ProductsPage = (): React.JSX.Element => {
         open={editingProduct !== null}
         onClose={() => setEditingProduct(null)}
         onEdit={(updateProduct) => {
+          const updateWithFlag = { ...updateProduct, isLocal: true };
           setAllProduct((prev) =>
-            prev.map((p) => (p.id === updateProduct.id ? updateProduct : p)),
+            prev.map((p) => (p.id === updateWithFlag.id ? updateProduct : p)),
           );
           setEditingProduct(null);
         }}

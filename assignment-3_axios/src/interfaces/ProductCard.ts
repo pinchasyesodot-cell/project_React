@@ -8,6 +8,7 @@ export interface ProductCardProps {
   total: number;
   category: string;
   onEditClick?: () => void;
+  isLocal?: boolean;
 }
 
 export interface ProductsApiResponse {
