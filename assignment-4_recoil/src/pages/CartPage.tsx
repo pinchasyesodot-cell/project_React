@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardMedia,
@@ -10,9 +11,11 @@ import {
 } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
 import { useCart } from "../hooks/useCart";
+import { useNavigate } from "react-router-dom";
 
 export const CartPage = () => {
   const { addToCart, cart, totalPrice, decreaseQuantity } = useCart();
+  const navigate = useNavigate();
   if (cart.length === 0) {
     return (
       <Typography variant="h5" sx={{ textAlign: "center", mt: 5 }}>
@@ -22,11 +25,12 @@ export const CartPage = () => {
   }
   return (
     <Grid container spacing={3}>
-      <Grid size={{ xs: 12, md: 8, lg: 3 }}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <Stack spacing={2}>
           {cart.map((product) => (
             <Card
-              sx={{ height: "100%", cursor: "pointer", display: "flex" }}
+              elevation={2}
+              sx={{ height: "100%", cursor: "pointer", display: "flex", p: 2 }}
               key={product.id}
             >
               <CardMedia
@@ -74,7 +78,7 @@ export const CartPage = () => {
                     <IconButton
                       onClick={(e) => {
                         e.preventDefault();
-                        decreaseQuantity(product)
+                        decreaseQuantity(product);
                       }}
                     >
                       <Remove color="primary" />
@@ -87,9 +91,23 @@ export const CartPage = () => {
         </Stack>
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
-        <Card>
-          <Typography variant="h5">:סך הכל לתשלום</Typography>
-          <CardContent>₪ {totalPrice}</CardContent>
+        <Card elevation={2} sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            סיכום הזמנה 📋
+          </Typography>
+          <CardContent sx={{ p: 0, "&:last-child": { pb: 0 } }}>
+            <Stack spacing={2}>
+              <Typography variant="body1">סך הכל: ₪ {totalPrice}</Typography>
+            </Stack>
+          </CardContent>
+
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => navigate("/checkout")}
+          >
+            checkout page
+          </Button>
         </Card>
       </Grid>
     </Grid>
