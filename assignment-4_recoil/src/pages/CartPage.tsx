@@ -12,6 +12,7 @@ import {
 import { Add, Remove } from "@mui/icons-material";
 import { useCart } from "../hooks/useCart";
 import { useNavigate } from "react-router-dom";
+import { RecommendedProducts } from "../components/RecommendedProducts";
 
 export const CartPage = () => {
   const { addToCart, cart, totalPrice, decreaseQuantity } = useCart();
@@ -89,6 +90,7 @@ export const CartPage = () => {
             </Card>
           ))}
         </Stack>
+        <RecommendedProducts />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <Card elevation={2} sx={{ p: 2 }}>

@@ -4,6 +4,8 @@ export interface ProductCardType {
   price: number;
   image: string;
   description: string;
+  category?: string;
+  recommendedIds?: number[];
 }
 
 export interface CartItemType extends ProductCardType {
