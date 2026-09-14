@@ -10,11 +10,18 @@ import {
 import type { ProductCardType } from "../interfaces/ProductCardType";
 import { AddShoppingCart } from "@mui/icons-material";
 import { useCart } from "../hooks/useCart";
+import { useNavigate } from "react-router-dom";
 
 export const ProductCard = (card: ProductCardType): JSX.Element => {
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   return (
-    <Card sx={{ height: "100%", cursor: "pointer" }}>
+    <Card
+      sx={{ height: "100%", cursor: "pointer" }}
+      onClick={() => {
+        navigate(`/product/${card.id}`);
+      }}
+    >
       <CardMedia
         image={card.image}
         component="img"

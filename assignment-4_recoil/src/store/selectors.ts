@@ -1,5 +1,5 @@
-import { selector } from "recoil";
-import { cartAtom } from "./atoms";
+import { selector, selectorFamily } from "recoil";
+import { cartAtom, productsAtom } from "./atoms";
 
 export const cartTotalQuantitySelector = selector({
   key: "cartTotalQuantitySelector",
@@ -21,4 +21,14 @@ export const cartTotalPriceSelector = selector({
     }, 0);
     return totalPrice;
   },
+});
+
+export const productByIdSelector = selectorFamily({
+  key: "productByIdSelector",
+  get:
+    (productId: string) =>
+    ({ get }) => {
+      const products = get(productsAtom);
+      return products.find((product) => String(product.id) === productId);
+    },
 });
