@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AddProductType } from "../interfaces/AddProductType";
 import type { ProductCardProps } from "../interfaces/ProductCard";
 import {
@@ -14,7 +14,7 @@ import { Close } from "@mui/icons-material";
 
 export const AddProductDialog = ({ open, onAdd, onClose }: AddProductType) => {
   const [newProduct, setNewProduct] = useState<ProductCardProps>({
-    id: Date.now(),
+    id: 0,
     title: "",
     price: 0,
     rating: 0,
@@ -23,6 +23,22 @@ export const AddProductDialog = ({ open, onAdd, onClose }: AddProductType) => {
     images: [""],
     total: 1,
   });
+
+  useEffect(() => {
+    if (open) {
+      setNewProduct({
+        id: 0,
+        title: "",
+        price: 0,
+        rating: 0,
+        category: "",
+        description: "",
+        images: [""],
+        total: 1,
+      });
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>
@@ -38,8 +54,14 @@ export const AddProductDialog = ({ open, onAdd, onClose }: AddProductType) => {
       <DialogContent>
         <form
           onSubmit={(e) => {
+            const finalProduct = {
+              ...newProduct,
+              id: Date.now(),
+              price: Number(newProduct.price),
+              rating: Number(newProduct.rating),
+            };
             e.preventDefault();
-            onAdd(newProduct);
+            onAdd(finalProduct);
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -69,17 +91,19 @@ export const AddProductDialog = ({ open, onAdd, onClose }: AddProductType) => {
             />
             <TextField
               label="Price"
+              type="number"
               value={newProduct.price === 0 ? "" : newProduct.price}
               onChange={(e) =>
-                setNewProduct({ ...newProduct, price: Number(e.target.value) })
+                setNewProduct({ ...newProduct, price: e.target.value })
               }
               required
             />
             <TextField
               label="Reting"
+              type="number"
               value={newProduct.rating === 0 ? "" : newProduct.rating}
               onChange={(e) =>
-                setNewProduct({ ...newProduct, rating: Number(e.target.value) })
+                setNewProduct({ ...newProduct, rating: e.target.value })
               }
               required
             />

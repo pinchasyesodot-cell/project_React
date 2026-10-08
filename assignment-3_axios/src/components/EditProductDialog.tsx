@@ -33,7 +33,8 @@ export const EditProductDialog = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Edit Product
+      <DialogTitle>
+        Edit Product
         <IconButton
           onClick={onClose}
           color="error"
@@ -47,7 +48,12 @@ export const EditProductDialog = ({
           onSubmit={(e) => {
             e.preventDefault();
             if (!editProduct) return;
-            onEdit(editProduct);
+            const finalProduct = {
+              ...editProduct,
+              price: Number(editProduct.price),
+              rating: Number(editProduct.rating),
+            };
+            onEdit(finalProduct);
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
@@ -80,19 +86,21 @@ export const EditProductDialog = ({
             />
             <TextField
               label="Price"
+              type="number"
               value={editProduct?.price}
               onChange={(e) =>
                 setEditProduct((prev) =>
-                  prev ? { ...prev, price: Number(e.target.value) } : null,
+                  prev ? { ...prev, price: e.target.value } : null,
                 )
               }
             />
             <TextField
               label="Rating"
+              type="number"
               value={editProduct?.rating}
               onChange={(e) =>
                 setEditProduct((prev) =>
-                  prev ? { ...prev, rating: Number(e.target.value) } : null,
+                  prev ? { ...prev, rating: e.target.value } : null,
                 )
               }
             />

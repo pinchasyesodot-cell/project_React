@@ -15,7 +15,7 @@ export const AnimalImagPage = (): React.JSX.Element => {
     >
       <Typography
         variant="h4"
-        sx={{ textTransform: "capitalize", md: 3 }}
+        sx={{ textTransform: "capitalize", mb: 3 }}
       >{animal} - Full Size</Typography>
       <img src={`/${imagName}.jpg`}></img>
     </Box>

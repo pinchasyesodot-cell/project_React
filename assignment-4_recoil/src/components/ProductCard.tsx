@@ -16,6 +16,9 @@ import {
   cartTotalQuantitySelector,
 } from "../store/selectors";
 
+const MAX_CART_ITEMS = 50;
+const MAX_UNITS_PER_PRODUCT = 5;
+
 export const ProductCard = (card: ProductCardType): JSX.Element => {
   const [cart, setCart] = useRecoilState(cartAtom);
   const setSnackbar = useSetRecoilState(snackbarAtom);
@@ -25,7 +28,7 @@ export const ProductCard = (card: ProductCardType): JSX.Element => {
   const handleAddCart = () => {
     const exisitingProductIndex = cart.findIndex((item) => item.id === card.id);
 
-    if (totalQuantity >= 50) {
+    if (totalQuantity >= MAX_CART_ITEMS) {
       setSnackbar({
         open: true,
         message: "You cannot add more than 50 items to your cart.",
@@ -47,10 +50,10 @@ export const ProductCard = (card: ProductCardType): JSX.Element => {
     if (exisitingProductIndex === -1) {
       setCart([...cart, { ...card, quantity: 1 }]);
     } else {
-      if (cart[exisitingProductIndex].quantity >= 5) {
+      if (cart[exisitingProductIndex].quantity >= MAX_UNITS_PER_PRODUCT) {
         setSnackbar({
           open: true,
-          message: "You cannot add more than 5 units of the same product.",
+          message: `You cannot add more than ${MAX_UNITS_PER_PRODUCT} units of the same product.`,
           severity: "error",
         });
         return;
@@ -71,7 +74,7 @@ export const ProductCard = (card: ProductCardType): JSX.Element => {
     });
   };
   return (
-    <Card sx={{ height: "100%", cursor: "pointer" }}>
+    <Card sx={{ height: "100%" }} dir="rtl">
       <CardMedia
         image={card.image}
         component="img"

@@ -97,10 +97,10 @@ export const ProductsPage = (): React.JSX.Element => {
       product.title.toLowerCase().includes(searchQuery.toLowerCase()),
     )
     .sort((a, b) => {
-      const priceA = a.price;
-      const priceB = b.price;
-      const ratingA = a.rating;
-      const ratingB = b.rating;
+      const priceA = Number(a.price);
+      const priceB = Number(b.price);
+      const ratingA = Number(a.rating);
+      const ratingB = Number(b.rating);
       if (selectSort === "From price high to low") return priceB - priceA;
       if (selectSort === "From price low to high") return priceA - priceB;
       if (selectSort === "From rating high to low") return ratingB - ratingA;
@@ -198,7 +198,7 @@ export const ProductsPage = (): React.JSX.Element => {
         onEdit={(updateProduct) => {
           const updateWithFlag = { ...updateProduct, isLocal: true };
           setAllProduct((prev) =>
-            prev.map((p) => (p.id === updateWithFlag.id ? updateProduct : p)),
+            prev.map((p) => (p.id === updateWithFlag.id ? updateWithFlag : p)),
           );
           setEditingProduct(null);
         }}

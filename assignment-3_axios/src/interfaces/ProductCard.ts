@@ -1,9 +1,9 @@
 export interface ProductCardProps {
   id: number;
   title: string;
-  price: number;
+  price: number | string;
   images: string[];
-  rating: number;
+  rating: number | string;
   description: string;
   total: number;
   category: string;

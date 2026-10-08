@@ -28,13 +28,13 @@ const App: React.FC = () => {
       <TaskList
         tasks={filterTasks}
         onToggleTask={(id) =>
-          setTasks(
-            filterTasks.map((task) =>
+          setTasks((prev)=>
+            prev.map((task) =>
               task.id === id ? { ...task, completed: !task.completed } : task,
             ),
           )
         }
-        onDeleteTask={(id) => setTasks(filterTasks.filter((task) => task.id !== id))}
+        onDeleteTask={(id) => setTasks((prev) => prev.filter((task) => task.id !== id))}
       />
       <TaskFilter
         currentFilter={filter}
